@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EntityCreation {
-    public static void main(String args[]) throws FileNotFoundException {
+    public static void main(String args[]) throws IOException {
         List<String> inputStringList = Arrays.asList("NUMBER(5)","NUMBER(1)","NUMBER(2)","NUMBER(3)","NUMBER(4)","NUMBER(5)");
         File file = ResourceUtils.getFile("classpath:lines.txt");
         List<String> list = new ArrayList<>();
-
+        StringBuilder stringBuilder = new StringBuilder();
         try (BufferedReader br = Files.newBufferedReader(Paths.get(file.getPath()))) {
             list = br.lines().collect(Collectors.toList());
 
@@ -29,7 +30,6 @@ public class EntityCreation {
         }
         for (String x : list) {
             final String[] split = x.split("\\s+");
-            StringBuilder stringBuilder = new StringBuilder();
             if (split[1].contains("VARCHAR")) {
                 stringBuilder.append("private LocalDate ");
             }else if (split[1].contains("DATE")){
@@ -58,12 +58,16 @@ public class EntityCreation {
                 stringBuilder.append(camelCase);
                 stringBuilder.append(";");
             }
-
-
-            System.out.println(stringBuilder.toString());
+            stringBuilder.append("\n");
         }
+        System.out.println(stringBuilder.toString());
+        writeFile(stringBuilder.toString());
 
+    }
 
+    private static void writeFile(String value) throws IOException {
+
+        Files.write(Paths.get("./output.txt"), value.getBytes());
     }
 
 
