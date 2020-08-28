@@ -22,7 +22,6 @@ public class OneListToAnotherList {
                         .id(125)
                         .name("sahu")
                         .build()
-
         );
 
         List<Student> studentList = empList.parallelStream().map(x ->
